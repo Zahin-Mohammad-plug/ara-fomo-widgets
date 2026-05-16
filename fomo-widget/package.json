@@ -1,0 +1,31 @@
+{
+  "name": "fomo-widget",
+  "version": "1.0.0",
+  "main": "electron/main.js",
+  "scripts": {
+    "dev": "concurrently \"vite\" \"wait-on http://localhost:5174 && electron .\"",
+    "build": "vite build && electron-builder",
+    "start": "electron .",
+    "vite": "vite"
+  },
+  "dependencies": {
+    "electron": "^30.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "leaflet": "^1.9.0",
+    "react-leaflet": "^4.0.0",
+    "lucide-react": "latest"
+  },
+  "devDependencies": {
+    "vite": "^6.0.0",
+    "@vitejs/plugin-react": "^4.3.0",
+    "electron-builder": "latest",
+    "concurrently": "latest",
+    "wait-on": "latest"
+  },
+  "build": {
+    "appId": "com.fomowidget.app",
+    "mac": { "target": "dmg" },
+    "files": ["dist/**/*", "electron/**/*", "package.json"]
+  }
+}
