@@ -1,6 +1,6 @@
 # Ara FOMO Widget (YC × Ara Hackathon)
 
-An Electron + React app that turns “what I want to do tonight” into an optimized SF tech event route. It pairs **local Claude Code routing** with a live map, a “leave now” countdown, and an optional **Übersicht** desktop widget.
+An Electron + React app that turns “what I want to do tonight” into an optimized SF tech event route. It pairs **local Claude Code routing** with a live map, a “leave now” countdown, and an optional **Ubersicht** desktop widget.
 
 ## Problem → Solution
 **Problem:** SF has too many overlapping events; picking a high‑value route is time‑consuming and error‑prone.  
@@ -9,7 +9,7 @@ An Electron + React app that turns “what I want to do tonight” into an optim
 ## Why this wins (what judges should notice)
 - **Clear user value:** removes friction in going from “I’m free tonight” to a concrete route.
 - **AI + deterministic fallback:** Claude Code handles routing; a local heuristic scorer keeps the app functional offline.
-- **Multi‑surface UX:** full app UI + lightweight Übersicht widget fed by `~/.fomo-widget/route.json`.
+- **Multi‑surface UX:** full app UI + lightweight Ubersicht widget fed by `~/.fomo-widget/route.json`.
 - **Local‑first privacy:** no Claude API keys; routing runs via a local CLI subprocess.
 
 ## Demo script (2–3 minutes)
@@ -18,7 +18,7 @@ An Electron + React app that turns “what I want to do tonight” into an optim
 3. **Show outputs:** scored list, route narrative, leave‑now timer, and map.
 4. **Exclude an event:** click “This event sucks” to re‑route.
 5. **Share:** click “Share Route” (copies tweet‑ready text).
-6. **Optional widget:** open Übersicht to show the live route summary card.
+6. **Optional widget:** open Ubersicht to show the live route summary card.
 
 ## How it works
 1. **Input:** text or voice (SpeechRecognition), plus Ara injection on port `9876`.
@@ -66,12 +66,14 @@ Send transcripts into the app via localhost:
 echo "I'm free 7–11pm, AI events, medium energy" | nc localhost 9876
 ```
 
-### Übersicht widget (macOS)
+### Ubersicht widget (macOS)
 Copy `fomo-widget/ubersicht/fomo-widget.jsx` to:
 
 ```
-~/Library/Application Support/Übersicht/Widgets/
+~/Library/Application Support/Ubersicht/Widgets/
 ```
+
+If your system shows the umlauted folder name, use `~/Library/Application Support/Übersicht/Widgets/` instead.
 
 The app writes `~/.fomo-widget/route.json`, which the widget reads and refreshes every 30 seconds.
 
