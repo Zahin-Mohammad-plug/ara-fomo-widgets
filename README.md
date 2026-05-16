@@ -73,7 +73,7 @@ Copy `fomo-widget/ubersicht/fomo-widget.jsx` to:
 ~/Library/Application Support/Ubersicht/Widgets/
 ```
 
-Finder may display the folder as `Übersicht`, but terminal paths typically use `~/Library/Application Support/Ubersicht/Widgets/`.
+Finder may render the folder name with an umlaut, but terminal paths typically use `~/Library/Application Support/Ubersicht/Widgets/`.
 
 The app writes `~/.fomo-widget/route.json`, which the widget reads and refreshes every 30 seconds.
 
