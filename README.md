@@ -73,7 +73,7 @@ Copy `fomo-widget/ubersicht/fomo-widget.jsx` to:
 ~/Library/Application Support/Ubersicht/Widgets/
 ```
 
-If your system shows the umlauted folder name, use `~/Library/Application Support/Übersicht/Widgets/` instead.
+If your system shows the folder name with an umlaut, use `~/Library/Application Support/Übersicht/Widgets/` instead.
 
 The app writes `~/.fomo-widget/route.json`, which the widget reads and refreshes every 30 seconds.
 
@@ -88,6 +88,6 @@ The app writes `~/.fomo-widget/route.json`, which the widget reads and refreshes
 - Packaging is macOS‑targeted (DMG) in `electron-builder` config.
 
 ## Next steps (post‑hackathon)
-- Wire live Luma API + Google Calendar OAuth.
+- Integrate live Luma API + Google Calendar OAuth.
 - Add richer error states + loading UX polish.
 - Ship a signed macOS build.
