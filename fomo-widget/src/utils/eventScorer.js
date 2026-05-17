@@ -1,4 +1,10 @@
-// Local heuristic fallback when Claude Code is unavailable
+// Local heuristic fallback when Claude Code is unavailable.
+// Mirrors the same scoring dimensions Claude uses (keyword match, density,
+// time fit, energy) so the app degrades gracefully rather than going blank.
+
+// Keyword lists are tuned for SF tech-scene vocabulary. When Claude is live,
+// it uses the same conceptual dimensions but with broader natural-language
+// understanding; this table is the deterministic safety net.
 const GOAL_KEYWORDS = {
   investors: ['investor', 'vc', 'venture', 'a16z', 'sequoia', 'yc', 'fund', 'lp', 'partner'],
   founders: ['founder', 'ceo', 'startup', 'early stage', 'pre-seed', 'seed'],
@@ -25,7 +31,9 @@ function scoreEvent(event, goals, availableFrom, availableUntil, energyLevel) {
   let score = 0;
   const reasons = [];
 
-  // Keyword match (0-40 pts)
+  // Keyword match: up to 40 pts. Score is proportional to how many goal
+  // categories have at least one hit in the event text — partial matches
+  // still get partial credit rather than zero.
   const eventText = `${event.name} ${event.description} ${event.tags.join(' ')}`.toLowerCase();
   let keywordHits = 0;
   for (const goal of goals) {
@@ -45,12 +53,14 @@ function scoreEvent(event, goals, availableFrom, availableUntil, energyLevel) {
     score += 20;
   }
 
-  // Attendee density signal (0-20 pts)
+  // Attendee density: up to 20 pts. Calibrated so 300 attendees = full score —
+  // that's roughly the upper bound for a typical SF tech event.
   const densityScore = Math.min(20, Math.round((event.attendee_count / 300) * 20));
   score += densityScore;
   if (densityScore > 12) reasons.push(`High attendance (${event.attendee_count})`);
 
-  // Time fit (0-30 pts)
+  // Time fit: up to 30 pts based on overlap between event window and user's
+  // stated availability. Overlap > 60 min = full credit; 30–60 min = half.
   const eventStart = parseTimeToMinutes(event.start_time);
   const eventEnd = parseTimeToMinutes(event.end_time === '05:00' ? '29:00' : event.end_time);
   const fromMins = availableFrom ? parseTimeToMinutes(availableFrom) : parseTimeToMinutes('17:00');
@@ -67,7 +77,8 @@ function scoreEvent(event, goals, availableFrom, availableUntil, energyLevel) {
     score += 5;
   }
 
-  // Energy adjustment
+  // Energy modifier: a small nudge that prevents sending a tired user to a
+  // 300-person hackathon, or a wired one to an intimate dinner.
   if (energyLevel === 'high' && event.tags.includes('hackathon')) score += 10;
   if (energyLevel === 'low' && event.attendee_count > 200) score -= 10;
 

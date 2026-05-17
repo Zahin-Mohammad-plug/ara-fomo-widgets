@@ -34,7 +34,8 @@ export default function App() {
       const result = await routeEvents(intentWithEnergy, filteredEvents, calendarBlocks, weather);
       setRouteData(result);
 
-      // Write route.json for Übersicht widget
+      // After every successful route, persist to ~/.fomo-widget/route.json so the
+      // Übersicht widget picks up the new plan on its next 30s poll cycle.
       if (window.electronAPI?.writeRoute) {
         await window.electronAPI.writeRoute(result).catch(console.warn);
       }

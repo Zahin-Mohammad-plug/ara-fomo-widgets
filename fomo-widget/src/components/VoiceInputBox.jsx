@@ -9,7 +9,14 @@ export function VoiceInputBox({ onSubmit, isLoading }) {
   const [isListening, setIsListening] = useState(false);
   const recognitionRef = useRef(null);
 
-  // Expose global callback for Ara injection
+  // Two injection paths for Ara:
+  // 1. window.__fomoWidgetSetInput — direct JS call from a browser extension
+  //    or any same-process script (useful during dev/testing).
+  // 2. window.electronAPI.onAraTranscript — the IPC path used in production:
+  //    Ara sends text to the TCP socket → main.js broadcasts 'ara-transcript'
+  //    → preload relays it to the renderer → this handler appends it here.
+  // Both append rather than overwrite so multiple Ara utterances accumulate
+  // into a single intent string.
   useEffect(() => {
     window.__fomoWidgetSetInput = (text) =>
       setInputValue(prev => (prev ? prev + ' ' + text : text).trim());

@@ -2,7 +2,13 @@ import { React, css } from "uebersicht";
 
 // ── Config ────────────────────────────────────────────────────────────
 
+// Poll every 30s — fast enough to feel live after a re-route, slow enough
+// that the shell cat command doesn't create noticeable CPU load.
 export const refreshFrequency = 30000;
+
+// Reading a local file via shell command is Übersicht's standard data-fetch
+// pattern. The 2>/dev/null + fallback '{}' means the widget renders its
+// empty state gracefully when no route has been planned yet.
 export const command = `cat "$HOME/.fomo-widget/route.json" 2>/dev/null || echo '{}'`;
 
 // ── Container ─────────────────────────────────────────────────────────
@@ -175,6 +181,9 @@ const emptyStyle = css`
 
 const pad = (n) => String(n).padStart(2, "0");
 
+// The countdown recomputes from wall clock on every 1s tick (via setInterval
+// in the component). Übersicht doesn't re-run the shell command that often,
+// so the timer stays accurate even between file-system polls.
 const formatCountdown = (leaveAt) => {
   if (!leaveAt) return null;
   const [h, m] = leaveAt.split(":").map(Number);
@@ -198,6 +207,8 @@ const FomoWidget = ({ output }) => {
   const { useState, useEffect } = React;
 
   const [data, setData] = useState({});
+  // tick drives the countdown re-render every second without needing to
+  // re-fetch the file — the route data is stable between 30s refreshes.
   const [tick, setTick] = useState(0);
 
   useEffect(() => {

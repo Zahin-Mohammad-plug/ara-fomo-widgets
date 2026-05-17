@@ -11,10 +11,14 @@ function createWindow() {
     height: 800,
     minWidth: 900,
     minHeight: 600,
+    // hiddenInset keeps native macOS traffic lights but removes the title bar,
+    // letting the custom header act as the drag region via -webkit-app-region: drag.
     titleBarStyle: 'hiddenInset',
     backgroundColor: '#0a0a0f',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
+      // contextIsolation + no nodeIntegration: renderer code can't reach Node APIs
+      // directly; everything goes through the contextBridge in preload.js.
       contextIsolation: true,
       nodeIntegration: false
     }
@@ -39,7 +43,10 @@ app.whenReady().then(() => {
     return writeRoute(data);
   });
 
-  // Ara sends transcripts via local socket on port 9876
+  // Ara integration: listen for transcript strings on a local TCP socket.
+  // When Ara (the AI assistant running on the same machine) hears the user
+  // speak, it pushes the transcript here. The renderer receives it via IPC
+  // and fills the intent box — no clipboard, no focus steal, no user friction.
   const server = net.createServer(socket => {
     socket.on('data', data => {
       const text = data.toString().trim();
@@ -54,6 +61,8 @@ app.whenReady().then(() => {
     console.log('Ara IPC socket listening on 127.0.0.1:9876');
   });
 
+  // Non-fatal — app works fine without Ara; this just means the socket port
+  // was already in use (e.g. another instance running).
   server.on('error', (err) => {
     console.warn('Ara socket error (non-fatal):', err.message);
   });
