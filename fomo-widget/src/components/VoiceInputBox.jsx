@@ -113,7 +113,7 @@ export function VoiceInputBox({ onSubmit, isLoading }) {
         >
           {isLoading ? (
             <span className="loading-text">
-              <span className="spinner" /> Routing with Claude Code...
+              <span className="spinner" /> Processing through Ara...
             </span>
           ) : (
             'Find My Route →'
